@@ -29,5 +29,3 @@ filtering_state.text('Filtering done!')
 
 figure = raw_filtered.plot_psd(show=False)
 st.write(figure)
-
-st.balloons()
