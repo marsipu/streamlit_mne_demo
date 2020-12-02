@@ -20,7 +20,7 @@ lowpass = st.sidebar.slider('Set Lowpass', min_value=0, max_value=75, value=50)
 raw = load_raw()
 
 raw_figure = raw.plot()
-st.write(raw_figure)
+st.plotly_chart(raw_figure)
 
 filtering_state = st.text('Filtering data...')
 with st.spinner(text='Filtering'):
@@ -28,6 +28,6 @@ with st.spinner(text='Filtering'):
 filtering_state.text('Filtering done!')
 
 figure = raw_filtered.plot_psd(show=False)
-st.write(figure)
+st.plotly_chart(figure)
 
 st.balloons()
