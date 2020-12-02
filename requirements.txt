@@ -1,0 +1,6 @@
+# Requirements for streamlit_mne_demo
+numpy
+scipy
+matplotlib
+mne
+streamlit
