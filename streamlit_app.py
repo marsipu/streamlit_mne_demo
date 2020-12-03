@@ -42,14 +42,12 @@ def plot_raw(raw, n_channels, duration, start):
 
 st.title('MNE-Demo')
 
-senseless_button = st.sidebar.button('Does nothing')
-
 raw = load_raw()
 rounded_sfreq = int(raw.info['sfreq'])
 st.write(f'Loaded raw with a sampling-frequency of {rounded_sfreq}')
 
 # Pick channels as selected
-channels = st.sidebar.multiselect('Channel-Selection', raw.ch_names, default=list())
+channels = st.sidebar.multiselect('Channel-Selection (if None, all selected)', raw.ch_names, default=list())
 raw_picked = pick_channels(raw, channels)
 
 # Get Filter-Parameters
@@ -76,17 +74,18 @@ if show_raw:
     # Add plot-buttons
     raw_col1, raw_col2, raw_col3, raw_col4 = st.beta_columns(4)
     with raw_col1:
-        if st.button('up'):
+        if st.button('Raw up'):
             raw_fig.canvas.key_press_event('up')
     with raw_col2:
-        if st.button('down'):
+        if st.button('Raw down'):
             raw_fig.canvas.key_press_event('down')
     with raw_col3:
-        if st.button('left'):
+        if st.button('Raw left'):
             raw_fig.canvas.key_press_event('left')
     with raw_col4:
-        if st.button('right'):
+        if st.button('Raw right'):
             raw_fig.canvas.key_press_event('right')
+    st.write('(Buttons are falling one step behind)')
 else:
     st.write('Check "Show MEG/EEG-Data (unfiltered)" to plot something')
 
@@ -98,17 +97,18 @@ if show_filt_raw:
     # Add plot-buttons
     raw_filt_col1, raw_filt_col2, raw_filt_col3, raw_filt_col4 = st.beta_columns(4)
     with raw_filt_col1:
-        if st.button('up'):
+        if st.button('Filt up'):
             raw_filt_fig.canvas.key_press_event('up')
     with raw_filt_col2:
-        if st.button('down'):
+        if st.button('Filt down'):
             raw_filt_fig.canvas.key_press_event('down')
     with raw_filt_col3:
-        if st.button('left'):
+        if st.button('Filt left'):
             raw_filt_fig.canvas.key_press_event('left')
     with raw_filt_col4:
-        if st.button('right'):
+        if st.button('Filt right'):
             raw_filt_fig.canvas.key_press_event('right')
+    st.write('(Buttons are falling one step behind)')
 else:
     st.write('Check "Show MEG/EEG-Data (filtered)" to plot something')
 
