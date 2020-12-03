@@ -81,10 +81,10 @@ if show_raw:
             raw_fig.canvas.key_press_event('down')
     with raw_col3:
         if st.button('Raw left'):
-            raw_fig.canvas.key_press_event('left')
+            raw_fig.canvas.key_press_event('shift+left')
     with raw_col4:
         if st.button('Raw right'):
-            raw_fig.canvas.key_press_event('right')
+            raw_fig.canvas.key_press_event('shift+right')
     st.write('(Buttons are falling one step behind)')
 else:
     st.write('Check "Show MEG/EEG-Data (unfiltered)" to plot something')
@@ -104,10 +104,10 @@ if show_filt_raw:
             raw_filt_fig.canvas.key_press_event('down')
     with raw_filt_col3:
         if st.button('Filt left'):
-            raw_filt_fig.canvas.key_press_event('left')
+            raw_filt_fig.canvas.key_press_event('shift+left')
     with raw_filt_col4:
         if st.button('Filt right'):
-            raw_filt_fig.canvas.key_press_event('right')
+            raw_filt_fig.canvas.key_press_event('shift+right')
     st.write('(Buttons are falling one step behind)')
 else:
     st.write('Check "Show MEG/EEG-Data (filtered)" to plot something')
