@@ -91,8 +91,7 @@ else:
 
 if show_filt_raw:
     st.write('This is the filtered MEG/EEG-Data')
-    raw_filt_fig = raw_filtered.plot(n_channels=n_channels, duration=duration, start=start, show_scrollbars=False,
-                                     show=False)
+    raw_filt_fig = plot_raw(raw_filtered, n_channels=n_channels, duration=duration, start=start)
     st.write(raw_filt_fig)
     # Add plot-buttons
     raw_filt_col1, raw_filt_col2, raw_filt_col3, raw_filt_col4 = st.beta_columns(4)
