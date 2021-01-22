@@ -14,6 +14,7 @@ def load_raw():
     sample_data_raw_file = join(sample_data_folder, 'MEG', 'sample',
                                 'sample_audvis_raw.fif')
     raw = mne.io.read_raw_fif(sample_data_raw_file, preload=True)
+    raw.resample(200)
 
     return raw
 
