@@ -26,6 +26,8 @@ def load_raw():
 
     # Picking only Gradiometer-Channels (example for slow drift in this data)
     raw.pick_types(meg=False, eeg=True, stim=False, eog=False)
+    # Uncomment this and comment the previous line to see some EKG-Artefacts
+    # raw.pick_types(meg='mag', eeg=False, stim=False, eog=False)
 
     # Data has to be loaded into memory for filtering afterwards
     raw.load_data()
@@ -55,7 +57,7 @@ lowpass = st.sidebar.slider('Tiefpass-Filter', min_value=0, max_value=100, value
 raw_filtered = filter_raw(loaded_raw, highpass, lowpass)
 
 st.write('EEG-Daten gefiltert:')
-filtered_fig = raw_filtered.plot(n_channels=10, duration=60, show_scrollbars=False,
+filtered_fig = raw_filtered.plot(n_channels=20, duration=30, show_scrollbars=False,
                                  show=False, title='Filtern von EEG-Daten', remove_dc=False)
 st.write(filtered_fig)
 
