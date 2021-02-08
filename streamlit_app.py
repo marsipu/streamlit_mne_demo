@@ -18,7 +18,7 @@ def load_raw():
     raw.crop(0, 60)
 
     # Resampling takes quit a long time, maybe filtering the higher sampling-rate is faster than first resampling
-    #   and then resampling the resampled data
+    #   and then filtering the resampled data
 
     # # Resampling data to sampling-frequency in [Hz]
     # st.write('Reducing SampleRate')
