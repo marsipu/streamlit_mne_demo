@@ -1,4 +1,5 @@
 from os.path import join
+from matplotlib.backends.backend_agg import RendererAgg
 
 import mne
 import streamlit as st
@@ -43,24 +44,27 @@ def filter_raw(raw, hp, lp):
 
     return raw
 
+# Lock functionality used to fix a bug with Matplot which influences multiuser interaction. 
+_lock = RendererAgg.lock
 
-st.title('EEG-Filter Demo')
+with _lock:
+ st.title('EEG-Filter Demo')
+ st.sidebar.write('<Erklär-Text>')
 
-st.sidebar.write('<Erklär-Text>')
+ loaded_raw = load_raw()
+ # Get Filter-Parameters
+ highpass = st.sidebar.slider('Hochpass-Filter', min_value=0, max_value=100, value=0)
+ lowpass = st.sidebar.slider('Tiefpass-Filter', min_value=0, max_value=100, value=100)
 
-loaded_raw = load_raw()
-# Get Filter-Parameters
-highpass = st.sidebar.slider('Hochpass-Filter', min_value=0, max_value=100, value=0)
-lowpass = st.sidebar.slider('Tiefpass-Filter', min_value=0, max_value=100, value=100)
+ # Filter raw
+ raw_filtered = filter_raw(loaded_raw, highpass, lowpass)
 
-# Filter raw
-raw_filtered = filter_raw(loaded_raw, highpass, lowpass)
-
-st.write('EEG-Daten gefiltert:')
-filtered_fig = raw_filtered.plot(n_channels=20, duration=30, show_scrollbars=False,
+ st.write('EEG-Daten gefiltert:')
+ filtered_fig = raw_filtered.plot(n_channels=20, duration=30, show_scrollbars=False,
                                  show=False, title='Filtern von EEG-Daten', remove_dc=False)
-st.write(filtered_fig)
+ st.pyplot(filtered_fig)
 
-st.write('Frequenzspektrum:')
-psd_fig = raw_filtered.plot_psd(show=False)
-st.write(psd_fig)
+ st.write('Frequenzspektrum:')
+ psd_fig = raw_filtered.plot_psd(show=False)
+ st.pyplot(psd_fig)
+ 
