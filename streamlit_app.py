@@ -2,6 +2,7 @@ import os
 import sys
 from os.path import join
 from matplotlib.backends.backend_agg import RendererAgg
+import numpy as np
 
 import mne
 import streamlit as st
@@ -75,32 +76,38 @@ _lock = RendererAgg.lock
 if filter_hash in figure_cache['EEG-Plot']:
     # Just for debugging
     st.write('Loading cached figure')
-    filtered_fig = figure_cache['EEG-Plot'][filter_hash]
+    filtered_image = figure_cache['EEG-Plot'][filter_hash]
 else:
     with _lock:
         # Just for debugging
         st.write('Producing new figure')
         filtered_fig = raw_filtered.plot(n_channels=20, duration=30, show_scrollbars=False,
                                          show=False, title='Filtern von EEG-Daten', remove_dc=False)
-    figure_cache['EEG-Plot'][filter_hash] = filtered_fig
+        filtered_fig.canvas.draw()
+        filtered_image = np.fromstring(filtered_fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+        filtered_image = filtered_image.reshape(filtered_fig.canvas.get_width_height()[::-1] + (3,))
+        figure_cache['EEG-Plot'][filter_hash] = filtered_image
 
 st.write('EEG-Daten gefiltert:')
-st.pyplot(filtered_fig)
+st.image(filtered_image)
 
 # Loading cached figure or creating a new one
 if filter_hash in figure_cache['PSD-Plot']:
     # Just for debugging
     st.write('Loading cached figure')
-    psd_fig = figure_cache['PSD-Plot'][filter_hash]
+    psd_image = figure_cache['PSD-Plot'][filter_hash]
 else:
     with _lock:
         # Just for debugging
         st.write('Producing new figure')
         psd_fig = raw_filtered.plot_psd(show=False)
-    figure_cache['PSD-Plot'][filter_hash] = psd_fig
+        psd_fig.canvas.draw()
+        psd_image = np.fromstring(psd_fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+        psd_image = psd_image.reshape(psd_fig.canvas.get_width_height()[::-1] + (3,))
+        figure_cache['PSD-Plot'][filter_hash] = psd_image
 
 st.write('Frequenzspektrum:')
-st.pyplot(psd_fig)
+st.image(psd_image)
 
 cache_size = sum([sum([sys.getsizeof(figure_cache[plot_type][freq_hash]) for freq_hash in figure_cache[plot_type]])
                   for plot_type in figure_cache])
