@@ -1,3 +1,5 @@
+import os
+import sys
 from os.path import join
 from matplotlib.backends.backend_agg import RendererAgg
 
@@ -44,27 +46,62 @@ def filter_raw(raw, hp, lp):
 
     return raw
 
-# Lock functionality used to fix a bug with Matplot which influences multiuser interaction. 
+
+@st.cache(allow_output_mutation=True)
+def FigureCache():
+    return {'EEG-Plot': dict(),
+            'PSD-Plot': dict()}
+
+
+st.title('EEG-Filter Demo')
+st.sidebar.write('<Erklär-Text>')
+
+loaded_raw = load_raw()
+# Get Filter-Parameters
+highpass = st.sidebar.slider('Hochpass-Filter', min_value=0, max_value=100, value=0)
+lowpass = st.sidebar.slider('Tiefpass-Filter', min_value=0, max_value=100, value=100)
+
+# Filter raw
+raw_filtered = filter_raw(loaded_raw, highpass, lowpass)
+
+figure_cache = FigureCache()
+# Create a string as hash from the Filter-Parameters
+filter_hash = f'{highpass}-{lowpass}'
+
+# Lock functionality used to fix a bug with Matplot which influences multiuser interaction.
 _lock = RendererAgg.lock
 
-with _lock:
- st.title('EEG-Filter Demo')
- st.sidebar.write('<Erklär-Text>')
+# Loading cached figure or creating a new one
+if filter_hash in figure_cache['EEG-Plot']:
+    # Just for debugging
+    st.write('Loading cached figure')
+    filtered_fig = figure_cache['EEG-Plot'][filter_hash]
+else:
+    with _lock:
+        # Just for debugging
+        st.write('Producing new figure')
+        filtered_fig = raw_filtered.plot(n_channels=20, duration=30, show_scrollbars=False,
+                                         show=False, title='Filtern von EEG-Daten', remove_dc=False)
+    figure_cache['EEG-Plot'][filter_hash] = filtered_fig
 
- loaded_raw = load_raw()
- # Get Filter-Parameters
- highpass = st.sidebar.slider('Hochpass-Filter', min_value=0, max_value=100, value=0)
- lowpass = st.sidebar.slider('Tiefpass-Filter', min_value=0, max_value=100, value=100)
+st.write('EEG-Daten gefiltert:')
+st.pyplot(filtered_fig)
 
- # Filter raw
- raw_filtered = filter_raw(loaded_raw, highpass, lowpass)
+# Loading cached figure or creating a new one
+if filter_hash in figure_cache['PSD-Plot']:
+    # Just for debugging
+    st.write('Loading cached figure')
+    psd_fig = figure_cache['PSD-Plot'][filter_hash]
+else:
+    with _lock:
+        # Just for debugging
+        st.write('Producing new figure')
+        psd_fig = raw_filtered.plot_psd(show=False)
+    figure_cache['PSD-Plot'][filter_hash] = psd_fig
 
- st.write('EEG-Daten gefiltert:')
- filtered_fig = raw_filtered.plot(n_channels=20, duration=30, show_scrollbars=False,
-                                 show=False, title='Filtern von EEG-Daten', remove_dc=False)
- st.pyplot(filtered_fig)
+st.write('Frequenzspektrum:')
+st.pyplot(psd_fig)
 
- st.write('Frequenzspektrum:')
- psd_fig = raw_filtered.plot_psd(show=False)
- st.pyplot(psd_fig)
- 
+cache_size = sum([sum([sys.getsizeof(figure_cache[plot_type][freq_hash]) for freq_hash in figure_cache[plot_type]])
+                  for plot_type in figure_cache])
+st.write(f'Figure-Cache takes {cache_size} bytes')
