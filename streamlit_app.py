@@ -7,6 +7,13 @@ import numpy as np
 import mne
 import streamlit as st
 
+# Page Configuration 
+st.set_page_config(
+    page_title="Filterung von EEG-Daten",
+    page_icon="📈",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    )
 
 # cache is turned off for Raw-Object, maybe if we want to implement reloading after changing some features
 # of the raw-object (n_channels, sfreq), we could implement a custom hash-function for that
@@ -44,7 +51,6 @@ def load_raw():
 def filter_raw(raw, hp, lp):
     with st.spinner(text='Filtering'):
         raw = raw.copy().filter(hp, lp)
-
     return raw
 
 
@@ -53,6 +59,13 @@ def FigureCache():
     return {'EEG-Plot': dict(),
             'PSD-Plot': dict()}
 
+# Hide Burger Menu
+hide_menu_style = """
+        <style>
+        #MainMenu {visibility: hidden;}
+        </style>
+        """
+st.markdown(hide_menu_style, unsafe_allow_html=True)
 
 st.title('EEG-Filter Demo')
 st.sidebar.write('<Erklär-Text>')
