@@ -67,9 +67,6 @@ hide_menu_style = """
         """
 st.markdown(hide_menu_style, unsafe_allow_html=True)
 
-st.title('EEG-Filter Demo')
-st.sidebar.write('<Erklär-Text>')
-
 loaded_raw = load_raw()
 # Get Filter-Parameters
 highpass = st.sidebar.slider('Hochpass-Filter', min_value=0, max_value=100, value=0)
@@ -88,12 +85,10 @@ _lock = RendererAgg.lock
 # Loading cached figure or creating a new one
 if filter_hash in figure_cache['EEG-Plot']:
     # Just for debugging
-    st.write('Loading cached figure')
     filtered_image = figure_cache['EEG-Plot'][filter_hash]
 else:
     with _lock:
         # Just for debugging
-        st.write('Producing new figure')
         filtered_fig = raw_filtered.plot(n_channels=20, duration=30, show_scrollbars=False,
                                          show=False, title='Filtern von EEG-Daten', remove_dc=False)
         filtered_fig.canvas.draw()
@@ -107,12 +102,10 @@ st.image(filtered_image)
 # Loading cached figure or creating a new one
 if filter_hash in figure_cache['PSD-Plot']:
     # Just for debugging
-    st.write('Loading cached figure')
     psd_image = figure_cache['PSD-Plot'][filter_hash]
 else:
     with _lock:
         # Just for debugging
-        st.write('Producing new figure')
         psd_fig = raw_filtered.plot_psd(show=False)
         psd_fig.canvas.draw()
         psd_image = np.fromstring(psd_fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
@@ -122,6 +115,6 @@ else:
 st.write('Frequenzspektrum:')
 st.image(psd_image)
 
-cache_size = sum([sum([sys.getsizeof(figure_cache[plot_type][freq_hash]) for freq_hash in figure_cache[plot_type]])
-                  for plot_type in figure_cache])
-st.write(f'Figure-Cache takes {cache_size} bytes')
+#cache_size = sum([sum([sys.getsizeof(figure_cache[plot_type][freq_hash]) for freq_hash in figure_cache[plot_type]])
+#                  for plot_type in figure_cache])
+#st.write(f'Figure-Cache takes {cache_size} bytes')
