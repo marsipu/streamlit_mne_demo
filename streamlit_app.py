@@ -119,7 +119,7 @@ else:
         figure_cache['PSD-Plot'][filter_hash] = psd_image
 
 col2.write('Frequenzspektrum:')
-col2.image(psd_image,width=1000)
+col2.image(psd_image,width=730)
 
 # Shows Cache Memory Usage
 #cache_size = sum([sum([sys.getsizeof(figure_cache[plot_type][freq_hash]) for freq_hash in figure_cache[plot_type]])
