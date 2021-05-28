@@ -27,7 +27,7 @@ col7, col8 = st.beta_columns([1,1])
 
 
 col1.write('Ieee0105 Speech')
-col1.audio(r'DemoAudiofiles\ieee0105_Speech.wav')
+col1.audio(r'DemoAudiofiles/ieee0105_Speech.wav')
 col2.write('8Bit Low Amp')
 col2.audio(r'DemoAudiofiles\speaker_8bit_low_amp.wav')
 col3.write('8Bit')
